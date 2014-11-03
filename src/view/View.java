@@ -1,67 +1,95 @@
 package view;
-import static javax.media.opengl.fixedfunc.GLMatrixFunc.GL_MODELVIEW;
-import static javax.media.opengl.fixedfunc.GLMatrixFunc.GL_PROJECTION;
+import java.io.IOException;
 
-import javax.media.opengl.GL;
-import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
-import javax.media.opengl.glu.GLU;
+import javax.media.opengl.GLException;
 
+import model.Ball;
+import model.Level;
 import model.Model;
+import model.Pad;
 
 
 public class View {
 	private Model model;
 	private Input input;
-	private int width;
-	private int height;
+	private Camera camera;
+
+	
+	private Core core = new Core();
 
 	public View(Model model, int width, int height, Input input) {
 		this.model = model;
 		this.input = input;
-		setDimensions(width, height);
+		camera = new Camera(model.level.width, model.level.height);
+		camera.setDimensions(width, height);
+		
 	}
-	
-	 public void reshape(GLAutoDrawable drawable, int x, int y, int w, int h) {
-    	 GL2 gl = drawable.getGL().getGL2();
-         GLU glu = new GLU();
-         
-         gl.glMatrixMode(GL_PROJECTION);
-         gl.glLoadIdentity(); // reset
-         glu.gluOrtho2D (0.0, w, h, 0);  // define drawing area
-         
-         gl.glMatrixMode(GL_MODELVIEW);
-         gl.glLoadIdentity(); // reset
-         
-         setDimensions(w, h);    
-    }
 
 	public void render(GLAutoDrawable drawable) {
-		GL2 gl = drawable.getGL().getGL2();
-		gl.glClear(GL.GL_COLOR_BUFFER_BIT);
+		try {
+			core.loadResources();
+		} catch (GLException | IOException e) {
+			e.printStackTrace();
+			System.exit(-1);
+		}
 		
-		//top left is 0, 0
-		int w = 10;
-		int h = 10;
-		drawQuad(gl, width / 2 - 5, height / 2 - 5, w, h);
+		core.clearScreen(drawable);
+		
+		drawLevel(drawable, model.level);
+		drawBall(drawable, model.ball);
+		drawPad(drawable, model.pad);
+		
+	}
+	 
+	 private void drawPad(GLAutoDrawable drawable, Pad pad) {
+		 float vx = camera.toViewX(pad.centerX);
+		 float vy = camera.toViewY(pad.topY);
+		 float vPadSize = (pad.width * camera.getScale());
+		 
+		 core.drawQuad(drawable, vx - vPadSize / 2.0f, vy, vPadSize, camera.getScale() * 0.5f);
 	}
 
-	private void drawQuad(GL2 gl, int x, int y, int w, int h) {
-		gl.glBegin(GL2.GL_QUADS);
-		
-		gl.glVertex2f(x,      y);
-		gl.glVertex2f(x + w, y);
-		gl.glVertex2f(x + w, y + h);
-		gl.glVertex2f(x,      y + h);
-	
-		gl.glEnd();
+	private void drawBall(GLAutoDrawable drawable, Ball ball) {
+		 float vx = camera.toViewX(ball.centerX);
+		 float vy = camera.toViewY(ball.centerY);
+		 float vBallSize = (ball.diameter * camera.getScale());
+		 
+		 core.drawQuad(drawable, vx - vBallSize / 2.0f, vy - vBallSize / 2.0f, vBallSize, vBallSize);
 	}
+
+	private void drawLevel(GLAutoDrawable drawable, Level level) {
+		
+		
+		for  (int x = 0; x < level.width; x++) {
+			for (int y = 0; y < level.height; y++)  {
+				float w = camera.getScale();
+				float h = camera.getScale();
+				if (level.bricks[x][y] instanceof model.FillBrick) {
+					float vx = camera.toViewX(x);
+					float vy = camera.toViewY(y);
+					
+					core.drawQuad(drawable, vx, vy, w, h);
+				}
+			}
+		}
+
+		//top left is 0, 0
+			
+		
+	}
+
 	
-	
-	 
-	 private void setDimensions(int width, int height) {
-		this.width = width;
-		this.height = height;
+
+	public void reshape(GLAutoDrawable drawable, int x, int y, int w, int h) {
+		core.reshape(drawable, x, y, w, h);
+		camera.setDimensions(w, h);    
+	}
+
+	public float getMouseXPos() {
+		float viewMousePos = input.getMousePosX();
+		return camera.toModelX(viewMousePos);
+		
 	}
 
 }

@@ -82,4 +82,8 @@ public class Input implements MouseListener, MouseMotionListener, KeyListener {
 		return false;
 	}
 
+	public float getMousePosX() {
+		return mousePos.x;
+	}
+
 }

@@ -19,7 +19,8 @@ public class Controller {
 	public void update(float timeElapsed, GLAutoDrawable drawable) {
 		
 		//Handle input
-		
+		float x = view.getMouseXPos();
+		model.pad.centerX = x;
 		
 		//Change model state
 		model.update(timeElapsed);

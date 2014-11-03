@@ -31,11 +31,9 @@ public class MinimalApplication implements GLEventListener  {
 	private Controller controller;
 	private long previousTime;
 	
-	static int width = 300;
-	static int height = 300;
+	static int width = 800;
+	static int height = 600;
 
-
-   
     
     public MinimalApplication(GLCanvas c) throws Exception {
     	model = new Model();
@@ -67,7 +65,6 @@ public class MinimalApplication implements GLEventListener  {
 
     @Override
     public void init(GLAutoDrawable drawable) {
-    	
     	reshape(drawable, 0, 0 , width, height);
     }
 
@@ -81,7 +78,7 @@ public class MinimalApplication implements GLEventListener  {
         GLProfile glp = GLProfile.getDefault();
         GLCapabilities caps = new GLCapabilities(glp);
         GLCanvas canvas = new GLCanvas(caps);
-
+        
         Frame frame = new Frame("Minimal MVC");
         frame.setSize(MinimalApplication.width, MinimalApplication.height);
         frame.add(canvas);

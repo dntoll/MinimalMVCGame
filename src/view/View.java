@@ -1,10 +1,16 @@
+package view;
+import static javax.media.opengl.fixedfunc.GLMatrixFunc.GL_MODELVIEW;
+import static javax.media.opengl.fixedfunc.GLMatrixFunc.GL_PROJECTION;
+
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
+import javax.media.opengl.glu.GLU;
+
+import model.Model;
 
 
 public class View {
-
 	private Model model;
 	private Input input;
 	private int width;
@@ -15,11 +21,20 @@ public class View {
 		this.input = input;
 		setDimensions(width, height);
 	}
-
-	public void setDimensions(int width, int height) {
-		this.width = width;
-		this.height = height;
-	}
+	
+	 public void reshape(GLAutoDrawable drawable, int x, int y, int w, int h) {
+    	 GL2 gl = drawable.getGL().getGL2();
+         GLU glu = new GLU();
+         
+         gl.glMatrixMode(GL_PROJECTION);
+         gl.glLoadIdentity(); // reset
+         glu.gluOrtho2D (0.0, w, h, 0);  // define drawing area
+         
+         gl.glMatrixMode(GL_MODELVIEW);
+         gl.glLoadIdentity(); // reset
+         
+         setDimensions(w, h);    
+    }
 
 	public void render(GLAutoDrawable drawable) {
 		GL2 gl = drawable.getGL().getGL2();
@@ -40,6 +55,13 @@ public class View {
 		gl.glVertex2f(x,      y + h);
 	
 		gl.glEnd();
+	}
+	
+	
+	 
+	 private void setDimensions(int width, int height) {
+		this.width = width;
+		this.height = height;
 	}
 
 }

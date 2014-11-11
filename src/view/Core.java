@@ -44,7 +44,7 @@ public class Core {
 		gl.glEnable(GL.GL_TEXTURE_2D);
 		gl.glBegin(GL2.GL_QUADS);
 		gl.glColor3f(1, 1, 1);
-		gl.glBindTexture(GL.GL_TEXTURE0, texture.getTarget());
+		gl.glBindTexture(GL.GL_TEXTURE0, texture.getTextureObject());
 		gl.glTexCoord2f(0, 1);
 		gl.glVertex2f(x,      y);
 		gl.glTexCoord2f(1, 1);

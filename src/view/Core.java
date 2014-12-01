@@ -87,6 +87,7 @@ public class Core {
 		
 		ball.bind(gl);
 		gl.glBegin(GL2.GL_QUADS);
+
 		gl.glColor4f(color[0], color[1], color[2],color[3]);
 		
 		gl.glTexCoord2f(0, 1);

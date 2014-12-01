@@ -1,12 +1,12 @@
 package model;
 
 public class Ball {
-	public float centerX = 4;
-	public float centerY = 4;
+	public float centerX = 1.5f;
+	public float centerY = 1.5f;
 	public float diameter = 0.5f;
 	
-	public float speedX = -2.0f;
-	public float speedY = -2.0f;
+	public float speedX = 2.9f;
+	public float speedY = 1.1f;
 	
 	public Vector2 getNewPosition(float timeElapsedSeconds) {
 
@@ -15,6 +15,10 @@ public class Ball {
 		
 		
 		return new Vector2(x, y);
+	}
+
+	public Vector2 getSpeed() {
+		return new Vector2(speedX, speedY);
 	}
 	
 	

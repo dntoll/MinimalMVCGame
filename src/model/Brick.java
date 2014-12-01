@@ -1,5 +1,7 @@
 package model;
 
-public class Brick {
+public abstract class Brick {
+
+	public abstract boolean collides();
 
 }

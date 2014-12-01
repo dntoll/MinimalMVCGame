@@ -27,6 +27,9 @@ public class Controller {
 		
 		if (hasStartedGame) {
 			playGame(timeElapsed, drawable);
+			
+			if (model.isGameOver())
+				hasStartedGame = false;
 		} else {
 			doMenu(drawable);
 		}

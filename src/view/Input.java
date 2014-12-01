@@ -86,4 +86,12 @@ public class Input implements MouseListener, MouseMotionListener, KeyListener {
 		return mousePos.x;
 	}
 
+	public float getMousePosY() {
+		return mousePos.y;
+	}
+
+	public void clear() {
+		mouseWasReleased = false;
+	}
+
 }

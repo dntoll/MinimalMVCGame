@@ -17,11 +17,22 @@ import com.jogamp.opengl.util.texture.TextureIO;
 
 public class Core {
 	
-	private Texture texture;
+	private Texture brick;
+	private Texture ball;
 	
 	void loadResources() throws GLException, IOException {
-		if (texture == null)
-			texture = TextureIO.newTexture(new File("redbox.png"), false);
+		if (brick == null)
+			brick = TextureIO.newTexture(new File("redbox.png"), false);
+		if (ball == null)
+			ball = TextureIO.newTexture(new File("ball.png"), false);
+	}
+	
+	void drawBall(GLAutoDrawable drawable, float x, float y, float w, float h) {
+		drawQuad(ball, drawable, x, y, w, h);
+	}
+	
+	void drawBrick(GLAutoDrawable drawable, float x, float y, float w, float h) {
+		drawQuad(brick, drawable, x, y, w, h);
 	}
 	
 	void reshape(GLAutoDrawable drawable, int x, int y, int w, int h) {
@@ -38,13 +49,46 @@ public class Core {
         
    }
 	
-	void drawQuad(GLAutoDrawable drawable, float x, float y, float w, float h) {
+	
+	
+	private void drawQuad(Texture tex, GLAutoDrawable drawable, float x, float y, float w, float h) {
+		GL2 gl = drawable.getGL().getGL2();
+		
+		//gl.glEnable(GL.GL_TEXTURE_2D);
+		tex.enable(gl);
+		gl.glEnable(GL.GL_BLEND);
+		gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA);
+		
+		tex.bind(gl);
+		//gl.glBindTexture(GL.GL_TEXTURE0, texture.getTextureObject());
+		gl.glBegin(GL2.GL_QUADS);
+		gl.glColor4f(1, 1, 1,1);
+		
+		gl.glTexCoord2f(0, 1);
+		gl.glVertex2f(x,      y);
+		gl.glTexCoord2f(1, 1);
+		gl.glVertex2f(x + w, y);
+		gl.glTexCoord2f(1, 0);
+		gl.glVertex2f(x + w, y + h);
+		gl.glTexCoord2f(0, 0);
+		gl.glVertex2f(x,      y + h);
+	
+		gl.glEnd();
+		//gl.glDisable(GL.GL_TEXTURE_2D);
+		tex.disable(gl);
+	}
+	
+	void drawBall(GLAutoDrawable drawable, float x, float y, float w, float h, float color[]) {
 		GL2 gl = drawable.getGL().getGL2();
 		
 		gl.glEnable(GL.GL_TEXTURE_2D);
+		ball.enable(gl);
+		gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA);
+		
+		ball.bind(gl);
 		gl.glBegin(GL2.GL_QUADS);
-		gl.glColor3f(1, 1, 1);
-		gl.glBindTexture(GL.GL_TEXTURE0, texture.getTarget());
+		gl.glColor4f(color[0], color[1], color[2],color[3]);
+		
 		gl.glTexCoord2f(0, 1);
 		gl.glVertex2f(x,      y);
 		gl.glTexCoord2f(1, 1);
@@ -56,10 +100,31 @@ public class Core {
 	
 		gl.glEnd();
 		gl.glDisable(GL.GL_TEXTURE_2D);
+		ball.disable(gl);
 	}
 
 	public void clearScreen(GLAutoDrawable drawable) {
 		GL2 gl = drawable.getGL().getGL2();
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT);
+	}
+
+	public void drawFrame(GLAutoDrawable drawable, float x, float y, float w,
+			float h) {
+		GL2 gl = drawable.getGL().getGL2();
+		
+		
+		gl.glBegin(GL2.GL_LINE_STRIP);
+		gl.glColor4f(1, 1, 1,1);
+		
+		
+		gl.glVertex2f(x,      y);
+		gl.glVertex2f(x + w, y);
+		gl.glVertex2f(x + w, y + h);
+		
+		gl.glVertex2f(x,      y + h);
+		gl.glVertex2f(x,      y);
+	
+		gl.glEnd();
+		
 	}
 }
